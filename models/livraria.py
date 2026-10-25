@@ -57,63 +57,76 @@ LOCALIZACAO = "Não informada."
 
 
 def listar_livros():
-	"""Retorna os livros cadastrados."""
-	return [livro.copy() for livro in LIVROS]
+    """Retorna os livros cadastrados."""
+    return [livro.copy() for livro in LIVROS]
 
 
 def pesquisar_livros(termo):
-	"""Pesquisa livros por trecho do título ou do autor."""
-	if not isinstance(termo, str) or not termo.strip():
-		return []
+    """Pesquisa por trecho do título ou do autor."""
+    if not isinstance(termo, str) or not termo.strip():
+        return []
 
-	consulta = termo.strip().casefold()
-	return [
-		livro.copy()
-		for livro in LIVROS
-		if consulta in livro["titulo"].casefold()
-		or consulta in livro["autor"].casefold()
-	]
+    consulta = termo.strip().casefold()
+
+    return [
+        livro.copy()
+        for livro in LIVROS
+        if consulta in livro["titulo"].casefold()
+        or consulta in livro["autor"].casefold()
+    ]
 
 
 def consultar_livro(titulo):
-	"""Retorna os dados de um livro, ou None se não estiver cadastrado."""
-	if not isinstance(titulo, str):
-		return None
+    """Retorna um livro ou None se não for encontrado."""
+    if not isinstance(titulo, str):
+        return None
 
-	titulo = titulo.strip().casefold()
-	for livro in LIVROS:
-		if livro["titulo"].casefold() == titulo:
-			return livro.copy()
-	return None
+    titulo = titulo.strip().casefold()
+
+    for livro in LIVROS:
+        if livro["titulo"].casefold() == titulo:
+            return livro.copy()
+
+    return None
 
 
 def consultar_disponibilidade(titulo):
-	livro = consultar_livro(titulo)
-	return bool(livro and livro["disponivel"])
+    """Verifica a disponibilidade geral de um livro."""
+    livro = consultar_livro(titulo)
+    return bool(livro and livro["disponivel"])
 
 
 def consultar_disponibilidade_loja(titulo, loja):
-	livro = consultar_livro(titulo)
-	if not livro or not isinstance(loja, str):
-		return False
+    """Verifica a disponibilidade de um livro em uma loja."""
+    livro = consultar_livro(titulo)
 
-	disponibilidade = livro["lojas"].get(loja.strip())
-	return bool(disponibilidade)
+    if not livro or not isinstance(loja, str):
+        return False
+
+    disponibilidade = livro["lojas"].get(loja.strip())
+    return bool(disponibilidade)
 
 
 def consultar_preco(titulo):
-	livro = consultar_livro(titulo)
-	return livro["preco"] if livro else None
+    """Retorna o preço do livro ou None se não existir."""
+    livro = consultar_livro(titulo)
+    return livro["preco"] if livro else None
 
 
 def consultar_horario():
-	return HORARIO_FUNCIONAMENTO
+    """Retorna o horário de funcionamento."""
+    return HORARIO_FUNCIONAMENTO
 
 
 def consultar_localizacao():
-	return LOCALIZACAO
+    """Retorna a localização da livraria."""
+    return LOCALIZACAO
 
 
 def recomendar_livros():
-	"""Retorna os livros cadastrados como recomendações disponíveis."""
-	return [livro.copy() for livro in LIVROS if livro["disponivel"]]
+    """Retorna os livros disponíveis como recomendações."""
+    return [
+        livro.copy()
+        for livro in LIVROS
+        if livro["disponivel"]
+    ]
